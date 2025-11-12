@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Трекер Настроения</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Плавающие смайлики на фоне анимация -->
+    <div class="floating-emoji" style="top: 10%; left: 5%; animation-delay: 0s;">😊</div>
+    <div class="floating-emoji" style="top: 20%; right: 8%; animation-delay: 1s;">🙂</div>
+    <div class="floating-emoji" style="bottom: 30%; left: 7%; animation-delay: 2s;">😐</div>
+    <div class="floating-emoji" style="bottom: 20%; right: 12%; animation-delay: 3s;">😟</div>
+    <div class="floating-emoji" style="top: 50%; left: 3%; animation-delay: 4s;">😢</div>
+
+    <div class="container">
+        <header>
+            <h1>📊 Трекер Настроения</h1>
+            <p class="subtitle">Отслеживайте ваше эмоциональное состояние и находите закономерности</p>
+        </header>
+
+        <!-- Слайдер вначале  -->
+        <div class="slider-container">
+            <div class="slider" id="slider">
+                <div class="slide slide-1">
+                    <h2>🎯 Начните отслеживать своё настроение</h2>
+                    <p>Просто выберите эмоцию и добавьте заметку</p>
+                </div>
+                <div class="slide slide-2">
+                    <h2>📈 Анализируйте тенденции</h2>
+                    <p>Смотрите статистику и графики вашего настроения</p>
+                </div>
+                <div class="slide slide-3">
+                    <h2>💫 Откройте себя заново</h2>
+                    <p>Поймите, что влияет на ваше эмоциональное состояние</p>
+                </div>
+            </div>
+            <button class="slider-arrow prev" onclick="slider.prevSlide()">❮</button>
+            <button class="slider-arrow next" onclick="slider.nextSlide()">❯</button>
+            <div class="slider-nav" id="sliderNav">
+                <div class="nav-dot active" onclick="slider.goToSlide(0)"></div>
+                <div class="nav-dot" onclick="slider.goToSlide(1)"></div>
+                <div class="nav-dot" onclick="slider.goToSlide(2)"></div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="mood-section">
+                <h2>Как вы себя чувствуете?</h2>
+                <div class="mood-selector" id="moodSelector">
+                    <div class="mood-option" data-mood="5" data-emoji="😊">
+                        <div class="mood-emoji">😊</div>
+                        <div class="mood-label">Отлично</div>
+                    </div>
+                    <div class="mood-option" data-mood="4" data-emoji="🙂">
+                        <div class="mood-emoji">🙂</div>
+                        <div class="mood-label">Хорошо</div>
+                    </div>
+                    <div class="mood-option" data-mood="3" data-emoji="😐">
+                        <div class="mood-emoji">😐</div>
+                        <div class="mood-label">Нормально</div>
+                    </div>
+                    <div class="mood-option" data-mood="2" data-emoji="😟">
+                        <div class="mood-emoji">😟</div>
+                        <div class="mood-label">Плохо</div>
+                    </div>
+                    <div class="mood-option" data-mood="1" data-emoji="😢">
+                        <div class="mood-emoji">😢</div>
+                        <div class="mood-label">Ужасно</div>
+                    </div>
+                </div>
+
+                <!-- Секция для загрузки фото -->
+                <div class="photo-section" id="photoSection">
+                    <h3 style="color: #42a5f5; margin-bottom: 15px; text-align: center;">
+                        <i class="fas fa-camera"></i> Покажите, что было хорошего за день!
+                    </h3>
+                    <div class="photo-upload-area" id="photoUploadArea">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 2em; color: #42a5f5; margin-bottom: 10px;"></i>
+                        <p>Нажмите для загрузки фото</p>
+                        <small>или перетащите файлы сюда</small>
+                    </div>
+                    <input type="file" id="photoInput" accept="image/*" multiple style="display: none;">
+                    <div class="photo-preview" id="photoPreview"></div>
+                </div>
+
+                <textarea id="moodNote" placeholder="Опишите, что повлияло на ваше настроение сегодня..."></textarea>
+                <button class="btn" id="saveMood">Сохранить настроение</button>
+            </div>
+
+            <div class="stats-section">
+                <h2>Ваша статистика</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalEntries">0</div>
+                        <div class="stat-label">Всего записей</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="avgMood">0</div>
+                        <div class="stat-label">Среднее настроение</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="currentStreak">0</div>
+                        <div class="stat-label">Дней подряд</div>
+                    </div>
+                </div>
+
+                <h3>График настроения</h3>
+                <div class="chart-container">
+                    <canvas id="moodChart"></canvas>
+                </div>
+            </div>
+
+            <div class="history-section">
+                <h2>История настроений</h2>
+                <div id="moodHistory">
+                    <div class="empty-state">Пока нет записей. Добавьте ваше первое настроение!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/slider.js"></script>
+    <script src="js/photo-upload.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
